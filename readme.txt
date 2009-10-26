@@ -11,7 +11,7 @@ Gives members the ability to upload attachments on their posts.
 
 Gives members the ability to upload attachments on their posts.
 
-This plugin was originally created for bbPress by _ck_. See the original plugin page here: http://bbpress.org/plugins/topic/bb-attachments/. Ported to BuddyPress 1.1 by boonebgorges. Please do not go to _ck_ for support, as this port to BP has nothing to do with him! Direct compliments only to _ck_ (95% of the code is his), complaints to boonebgorges (who probably screwed some stuff up!) http://teleogistic.net/2009/10/help-me-alpha-test-buddypress-forum-attachments/. 
+This plugin was originally created for bbPress by _ck_. See the original plugin page here: http://bbpress.org/plugins/topic/bb-attachments/. Ported to BuddyPress 1.1 by boonebgorges. Please do not go to _ck_ for support, as this port to BP has nothing to do with her! Direct compliments only to _ck_ (95% of the code is hers), complaints to boonebgorges (who probably screwed some stuff up!) http://teleogistic.net/2009/10/help-me-alpha-test-buddypress-forum-attachments/. 
 
 
 == Installation ==
