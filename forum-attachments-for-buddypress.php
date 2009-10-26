@@ -12,6 +12,17 @@ License: CC-GNU-GPL http://creativecommons.org/licenses/GPL/2.0/
 Donate: http://bbshowcase.org/donate/
 */
 
+function bb_attachments_buddypress_init () {
+	$plugin_dir = basename(dirname(__FILE__));
+	$locale = get_locale();
+	$mofile = WP_PLUGIN_DIR . "/forum-attachments-for-buddypress/languages/fa-4-buddypress-$locale.mo";
+      
+      if ( file_exists( $mofile ) )
+      		load_textdomain( 'fa-4-buddypress', $mofile );
+}
+
+add_action ('plugins_loaded', 'bb_attachments_buddypress_init');
+
 global $bb_attachments;
 $bb_attachments['role']['see']="read"; 		 // minimum role to see list of attachments = read/participate/moderate/administrate
 $bb_attachments['role']['inline']="read";    // minimum role to view inline reduced images = read/participate/moderate/administrate
@@ -189,7 +200,7 @@ if ($post_id==0) {if (isset($_GET['bb_attachments'])) {$post_id=intval($_GET['bb
 if ($post_id) {
 	$bb_post=bb_get_post($post_id);
 	if (bb_attachments_location()!='edit.php') {
-	echo "<h3 class='bbcrumb'><a href='".bb_get_option('uri')."'>".bb_get_option('name')."</a> &raquo; <a href='".get_topic_link()."'>".get_topic_title( $bb_post->topic_id )."</a> &raquo; <a href='".get_post_link($bb_post->post_id)."'>".__('Post')." $bb_post->post_position</a> &raquo;  ".__('Attachments')."</h3>";
+	echo "<h3 class='bbcrumb'><a href='".bb_get_option('uri')."'>".bb_get_option('name')."</a> &raquo; <a href='".get_topic_link()."'>".get_topic_title( $bb_post->topic_id )."</a> &raquo; <a href='".get_post_link($bb_post->post_id)."'>".__('Post','fa-4-buddypress')." $bb_post->post_position</a> &raquo;  ".__('Attachments','fa-4-buddypress')."</h3>";
 	}
 	echo "<div class='indent'>";
 	if (isset($_FILES['bb_attachments'])) {
@@ -252,22 +263,22 @@ if ($bb_attachments['role']['see']=="read") {
 				}						
 				
 				$output.=" <span class='num'>(".round($attachment->size/1024,1)." KB";				
-				if ($attachment->status<2) {$output.=", ".bb_number_format_i18n($attachment->downloads)." ".__('downloads');}
+				if ($attachment->status<2) {$output.=", ".bb_number_format_i18n($attachment->downloads)." ".__('downloads','fa-4-buddypress');}
 				$output.=")</span> ";
-				if ($attachment->time<$time) {$output.=" <small>".bb_since($attachment->time)." ".__('old')."</small> ";}
+				if ($attachment->time<$time) {$output.=" <small>".bb_since($attachment->time)." ".__('old','fa-4-buddypress')."</small> ";}
 								
 				if ($admin) {				
 					$output.=' [<a href="'.attribute_escape(bb_get_option('uri').'bb-admin/view-ip.php?ip='.long2ip($attachment->user_ip)) . '">'.long2ip($attachment->user_ip).'</a>] ';
 				}	
 				
 				if ($attachment->status==0 && $can_delete) {
-						$output.=' [<a onClick="return confirm('."'".__('Delete')." $attachment->filename ?"."'".')" href="'.add_query_arg('bbat_delete',$attachment->id).'">x</a>] ';
+						$output.=' [<a onClick="return confirm('."'".__('Delete','fa-4-buddypress')." $attachment->filename ?"."'".')" href="'.add_query_arg('bbat_delete',$attachment->id).'">x</a>] ';
 				}
 //bb_attachments_inline();
 				if ($attachment->status==0 && $location=="edit.php" && $can_inline) {				
 					$fullpath=$bb_attachments['path'].floor($attachment->id/1000)."/".$attachment->id.".".$attachment->filename;
 					if (list($width, $height, $type) = getimagesize($fullpath)) {								
-						$output.=" [<strong><a href='#' onclick='bbat_inline_insert($attachment->post_id,$attachment->id); return false;'>".__("INSERT")."</a></strong>] ";	
+						$output.=" [<strong><a href='#' onclick='bbat_inline_insert($attachment->post_id,$attachment->id); return false;'>".__("INSERT","fa-4-buddypress")."</a></strong>] ";	
 					}
 				}						
 	
@@ -276,7 +287,7 @@ if ($bb_attachments['role']['see']=="read") {
 			}
 		}
 	}
-if ($output) {$output="<h3>".__("Attachments")."</h3><ol>".$output."</ol>";}
+if ($output) {$output="<h3>".__("Attachments","fa-4-buddypress")."</h3><ol>".$output."</ol>";}
 if ($location=="edit.php") {
 $output.='<scr'.'ipt type="text/javascript" defer="defer">
 	function bbat_inline_insert(post_id,id) {
@@ -363,7 +374,7 @@ $strip = array(' ','`','"','\'','\\','/','..','__');  // filter for filenames
 $maxlength=bb_attachments_lookup($bb_attachments['max']['filename']);
 reset($_FILES);
 
-$output="<h3>".__("Uploads")."</h3><ol>";	// start output
+$output="<h3>".__("Uploads","fa-4-buddypress")."</h3><ol>";	// start output
 while(list($key,$value) = each($_FILES['bb_attachments']['name'])) {
 	if(!empty($value)){ 	
 		
@@ -453,9 +464,9 @@ while(list($key,$value) = each($_FILES['bb_attachments']['name'])) {
 		if ($status>0) {
 			if ($id>0) {$wpdb->query("UPDATE ".$bb_attachments['db']." SET 'status' = $status WHERE 'id' = $id");}
 			$error=""; if ($_FILES['bb_attachments']['error'][$key]>0) {$error=" (".$bb_attachments['errors'][$_FILES['bb_attachments']['error'][$key]].") ";}
-			$output.="<li><span style='color:red'><strong>$filename "." <span class='num'>(".round($size/1024,1)." KB)</span> ".__('error:')." ".$bb_attachments['status'][$status]."</strong>$error</span></li>";
+			$output.="<li><span style='color:red'><strong>$filename "." <span class='num'>(".round($size/1024,1)." KB)</span> ".__('error:','fa-4-buddypress')." ".$bb_attachments['status'][$status]."</strong>$error</span></li>";
 		} else {			
-			$output.="<li><span style='color:green'><strong>$filename "." <span class='num'>(".round($size/1024,1)." KB)</span> ".__('successful')."</strong></span></li>";			 
+			$output.="<li><span style='color:green'><strong>$filename "." <span class='num'>(".round($size/1024,1)." KB)</span> ".__('successful','fa-4-buddypress')."</strong></span></li>";			 
 			if ($bb_attachments['inline']['auto'] && list($width, $height, $type) = getimagesize($file)) {
 		 	if ($display) {
 		 	
@@ -487,7 +498,7 @@ if (!$post_id) {$post_id=intval($_GET['bb_attachments']);} 	// only can upload i
 $user_id=bb_get_current_user_info( 'id' );
 if (!$user_id || ($post_id && !bb_current_user_can('edit_post',$post_id)) || !bb_current_user_can($bb_attachments['role']['upload'])) {return;}	
 
-$count=0; $allowed=__('allowed uploads:')." "; $exts=bb_attachments_lookup($bb_attachments['allowed']['extensions']);
+$count=0; $allowed=__('allowed uploads:','fa-4-buddypress')." "; $exts=bb_attachments_lookup($bb_attachments['allowed']['extensions']);
 $tcount=count($exts); foreach ($exts as $ext) {
 $allowed.=$ext.' <span class="num">('.round(bb_attachments_lookup($bb_attachments['max']['size'],$ext)/1024,1).' KB)</span>, ';
 $count++; if ($count==5 && $tcount>7) {$allowed.="<br />";}
@@ -497,7 +508,7 @@ $allowed=rtrim($allowed," ,");
 
 if ($post_id) {echo '<form class="bb_attachments_upload_form" enctype="multipart/form-data" method="post" action="'.attribute_escape(add_query_arg('bb_attachments',$post_id,remove_query_arg(array('bb_attachments','bbat','bbat_delete')))).'">';}
 else {echo '<input  type="hidden" name="bb_attachments" value="0" />';}
-echo	'<h3>'.__("Upload Files from your Computer").'</h3>		
+echo	'<h3>'.__("Upload Files from your Computer","fa-4-buddypress").'</h3>		
 	<input  type="hidden" name="MAX_FILE_SIZE" value="'.$bb_attachments['max']['php_upload_limit'].'" />			
 	<span id="bb_attachments_file_sample">
 	<input type="file" name="bb_attachments[]" size="50" /><br />
@@ -514,9 +525,9 @@ echo	'<h3>'.__("Upload Files from your Computer").'</h3>
 	</script>
 	'.$allowed.'<br />
 	<div style="margin:1em 0 0 0;">';		 
-if ($post_id) {echo '<a style="margin-right:12em;" href="'. get_post_link( $post_id ).'">'.__("&laquo; return to post").'</a>';}
+if ($post_id) {echo '<a style="margin-right:12em;" href="'. get_post_link( $post_id ).'">'.__("&laquo; return to post","fa-4-buddypress").'</a>';}
 else {echo '<span style="margin-right:20em;">&nbsp;</span>';}
-echo	'<a href="javascript:void(0)" onClick="bb_attachment_inputs();">[+] '.__('more').'</a> &nbsp; 
+echo	'<a href="javascript:void(0)" onClick="bb_attachment_inputs();">[+] '.__('more','fa-4-buddypress').'</a> &nbsp; 
 	
 	</div>';
 if ($post_id) {echo '</form>';}
@@ -589,7 +600,7 @@ if ($filenum>0 && ($bb_attachments['role']['download']=="read" || bb_current_use
 			fclose($fp);            			
             		}		
 	}	
-} else {nocache_headers(); 	echo "<html><body>".__('Sorry, download is restricted.')."<scr"."ipt type='text/javascript'>alert('".__('Sorry, download is restricted.')."');</script></body></html>";}
+} else {nocache_headers(); 	echo "<html><body>".__('Sorry, download is restricted.','fa-4-buddypress')."<scr"."ipt type='text/javascript'>alert('".__('Sorry, download is restricted.','fa-4-buddypress')."');</script></body></html>";}
 exit;	// no matter what, it's over here
 }
 
@@ -758,7 +769,7 @@ function bb_attachments_link($link) {
 global $bb_attachments, $bb_attachments_cache, $bb_post, $bb_current_user;
 $post_id=$bb_post->post_id;
 	if (($bb_current_user->ID ==$bb_post->poster_id && $bb_attachments_cache[$post_id]) && bb_current_user_can($bb_attachments['role']['upload']) ) { 
-		echo " <a href='" . attribute_escape(add_query_arg('bb_attachments',$post_id,remove_query_arg(array('bb_attachments','bbat','bbat_delete')))) . "' >" . __('Attachments') ."</a> ";
+		echo " <a href='" . attribute_escape(add_query_arg('bb_attachments',$post_id,remove_query_arg(array('bb_attachments','bbat','bbat_delete')))) . "' >" . __('Attachments','fa-4-buddypress') ."</a> ";
 	}
 	return $link;
 }
