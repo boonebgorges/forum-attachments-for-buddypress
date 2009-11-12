@@ -26,8 +26,8 @@ add_action ('plugins_loaded', 'bb_attachments_buddypress_init');
 global $bb_attachments;
 $bb_attachments['role']['see']="read"; 		 // minimum role to see list of attachments = read/participate/moderate/administrate
 $bb_attachments['role']['inline']="read";    // minimum role to view inline reduced images = read/participate/moderate/administrate
-$bb_attachments['role']['download']="participate";  // minimum role to download original = read/participate/moderate/administrate
-$bb_attachments['role']['upload']="participate";  // minimum role to upload = participate/moderate/administrate (times out with post edit time)
+$bb_attachments['role']['download']="read";  // minimum role to download original = read/participate/moderate/administrate
+$bb_attachments['role']['upload']="read";  // minimum role to upload = participate/moderate/administrate (times out with post edit time)
 $bb_attachments['role']['delete']="moderate";  // minimum role to delete = read/participate/moderate/administrate
 
 $bb_attachments['allowed']['extensions']['default']=array('gif','jpeg','jpg','pdf','png','txt');	// anyone who can upload can submit these
@@ -140,13 +140,15 @@ if (isset($_GET["new"]) || $bp->current_component == BP_FORUMS_SLUG || $bp->curr
 	add_action( 'topic_page_load', 'bb_attachments_cache' );	
 	add_filter('bp_after_post_content', 'bb_attachments_post_footer',4);
 	add_filter('post_edit_uri', 'bb_attachments_link');
-
+//print "<pre>"; print_r($bb_attachments); die();
 	if (bb_current_user_can($bb_attachments['role']['upload'])) {
 		add_action('post_edit_form','bb_attachments');		// auto-insert on post edit form
 
 		if ($bb_attachments['upload_on_new']) {
 			add_action('groups_forum_new_topic_after','bb_attachments_upload_form');
 			add_action('groups_forum_new_reply_after', 'bb_attachments_upload_form');
+			add_action('groups_forum_edit_post_after', 'bb_attachments_upload_form');
+			add_action('groups_forum_edit_topic_after', 'bb_attachments_upload_form');
 			add_action('pre_post_form','bb_attachments_enctype');	 // multipart workaround on new post form
 
 
@@ -155,7 +157,6 @@ if (isset($_GET["new"]) || $bp->current_component == BP_FORUMS_SLUG || $bp->curr
 } // end else
 
 }
-
 
 
 
