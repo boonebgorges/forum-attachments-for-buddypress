@@ -34,3 +34,7 @@ Many thanks to slaFFik for his work on localizing this plugin!
 * Removed the need for custom hooks
 * Enabled inline images
 * Improved download process to avoid header conflicts
+
+= 0.2.1 =
+* Corrected redirect after deleting attachments
+* Removed header requirements causing errors on some Apache setups

@@ -50,13 +50,13 @@ $bb_attachments['role']['download']="read";  // minimum role to download origina
 $bb_attachments['role']['upload']="read";  // minimum role to upload = participate/moderate/administrate (times out with post edit time)
 $bb_attachments['role']['delete']="moderate";  // minimum role to delete = read/participate/moderate/administrate
 
-$bb_attachments['allowed']['extensions']['default']=array('bmp','doc','gif','gz','jpeg','jpg','pdf','png','txt','xls','zip', 'gif','jpeg','jpg','pdf','png','txt', 'docx', 'xlsx', 'ppt', 'pptx');	// anyone who can upload can submit these
-$bb_attachments['allowed']['extensions']['moderate']=array('bmp','doc','gif','gz','jpeg','jpg','pdf','png','txt','xls','zip', 'gif','jpeg','jpg','pdf','png','txt', 'docx', 'xlsx', 'ppt', 'pptx');	// only if they can moderate
-$bb_attachments['allowed']['extensions']['administrate']=array('bmp','doc','gif','gz','jpeg','jpg','pdf','png','txt','xls','zip', 'gif','jpeg','jpg','pdf','png','txt', 'docx', 'xlsx', 'ppt', 'pptx');	// only if they can administrate
+$bb_attachments['allowed']['extensions']['default']=array('gif','jpeg','jpg','pdf','png','txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx');	// anyone who can upload can submit these
+$bb_attachments['allowed']['extensions']['moderate']=array('gif','gz','jpeg','jpg','pdf','png','txt','zip', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx');	// only if they can moderate
+$bb_attachments['allowed']['extensions']['administrate']=array('bmp','doc','gif','gz','jpeg','jpg','pdf','png','txt','xls','zip', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx');	// only if they can administrate
 
-$bb_attachments['allowed']['mime_types']['default']=array( 'application/msword', 'text/plain', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/octet-stream', 'text/plain', 'text/x-c', 'image/bmp', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/zip', 'application/x-zip' , 'application/x-gzip');  // for anyone that can upload
-$bb_attachments['allowed']['mime_types']['moderate']=array('application/msword', 'text/plain', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/zip', 'application/x-zip' , 'application/x-gzip');
-$bb_attachments['allowed']['mime_types']['administrate']=array('application/msword', 'application/octet-stream', 'text/plain', 'text/x-c', 'image/bmp', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/zip', 'application/x-zip' , 'application/x-gzip');
+$bb_attachments['allowed']['mime_types']['default']=array('text/plain', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msword', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');  // for anyone that can upload
+$bb_attachments['allowed']['mime_types']['moderate']=array('text/plain', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/zip', 'application/x-zip' , 'application/x-gzip', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msword', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+$bb_attachments['allowed']['mime_types']['administrate']=array('application/octet-stream', 'text/plain', 'text/x-c', 'image/bmp', 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/x-pdf', 'application/zip', 'application/x-zip' , 'application/x-gzip', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/msword', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
 
 $bb_attachments['max']['size']['default']=100*1024;	   // general max for all type/roles, in bytes (ie. 100k)
 $bb_attachments['max']['size']['jpg'] =150*1024;	   	   // size limit override by extension, bytes (ie. 200k)
@@ -136,12 +136,30 @@ register_activation_hook( str_replace(
 	array("user#","core#"),
 	__FILE__), 
 	'bb_attachments_install');
+function curPageURL() {
+ $pageURL = 'http';
+ if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+ $pageURL .= "://";
+ if ($_SERVER["SERVER_PORT"] != "80") {
+  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+ } else {
+  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+ }
+ return $pageURL;
+}
+
+
+
 
 function bb_attachments_init() {
 global $wpdb, $bb_attachments, $bp;
 //if (isset($_GET['bb_attachments_diagnostic']) || isset($_GET['bb_attachments_debug'])) {include('debug.php');}
 //include('debug.php');
-if (isset($_GET['bbat_delete'])) {bb_attachments_delete();}
+if (isset($_GET['bbat_delete'])) {
+	$url = curPageURL();
+	bb_attachments_delete( $url );
+	
+}
 if (isset($_GET['bb_attachments'])) {
 	if (isset($_GET['bbat'])) {
 		if (isset($_GET['inline'])) {bb_attachments_inline();}
@@ -409,35 +427,38 @@ return $text;
 }
 
 function bb_attachments_process_post($group_id, $post, $display=0) {
-global $wpdb, $bb_attachments;
-if ($post->topic_last_post_id) {
-	$post_id = $post->topic_last_post_id;
-} else {
-	$post_id = $post;
-}
+	global $wpdb, $bb_attachments;
+	if ($post->topic_last_post_id) {
+		$post_id = $post->topic_last_post_id;
+	} else {
+		$post_id = $post;
+	}
 
+	if (!$post_id) 
+		{$post_id=intval($_GET['bb_attachments']);}	// only can upload if user is allowed to edit post
+		
+	$user_id = bb_get_current_user_info( 'id' );
+	//if (function_exists( 'bb_current_user_can' ) ) {print_r($_FILES);die();}
 
-if (!$post_id) {$post_id=intval($_GET['bb_attachments']);}	// only can upload if user is allowed to edit post
-$user_id=bb_get_current_user_info( 'id' );
-//if (function_exists( 'bb_current_user_can' ) ) {print_r($_FILES);die();}
+	if (!isset($_FILES['bb_attachments']) || !is_array($_FILES['bb_attachments']) || !$user_id || !$post_id || !bb_current_user_can('edit_post',$post_id) || !bb_current_user_can($bb_attachments['role']['upload'])) {}	
 
+	$user_ip = $_SERVER["REMOTE_ADDR"];  	// $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
+	$time = time();
+	$inject="";					
 
+	$bb_post = bb_get_post($post_id);
+	$topic_id = $bb_post->topic_id; 	// fetch related topic
 
-if (!isset($_FILES['bb_attachments']) || !is_array($_FILES['bb_attachments']) || !$user_id || !$post_id || !bb_current_user_can('edit_post',$post_id) || !bb_current_user_can($bb_attachments['role']['upload'])) {}	
+	$topic_attachments = intval(bb_get_topicmeta($topic_id,"bb_attachments"));	// generally how many on topic (may be off if post moved)
+	$count = intval($wpdb->get_var("SELECT COUNT(*) FROM ".$bb_attachments['db']." WHERE post_id = $post_id AND status = 0")); // how many currently on post
 
-$user_ip=$_SERVER["REMOTE_ADDR"];  	// $GLOBALS["HTTP_SERVER_VARS"]["REMOTE_ADDR"];
-$time=time();	$inject="";					
+	$offset=0;	// counter for this pass
+	$strip = array(' ','`','"','\'','\\','/','..','__');  // filter for filenames
+	$maxlength = bb_attachments_lookup($bb_attachments['max']['filename']);
+	reset($_FILES);
 
-$bb_post=bb_get_post($post_id);  $topic_id=$bb_post->topic_id; 	// fetch related topic
-$topic_attachments=intval(bb_get_topicmeta($topic_id,"bb_attachments"));	// generally how many on topic (may be off if post moved)
-$count = intval($wpdb->get_var("SELECT COUNT(*) FROM ".$bb_attachments['db']." WHERE post_id = $post_id AND status = 0")); // how many currently on post
-$offset=0;	// counter for this pass
-$strip = array(' ','`','"','\'','\\','/','..','__');  // filter for filenames
-$maxlength=bb_attachments_lookup($bb_attachments['max']['filename']);
-reset($_FILES);
-
-$output="<h3>".__("Uploads","fa-4-buddypress")."</h3><ol>";	// start output
-while(list($key,$value) = each($_FILES['bb_attachments']['name'])) {
+	$output="<h3>".__("Uploads","fa-4-buddypress")."</h3><ol>";	// start output
+	while(list($key,$value) = each($_FILES['bb_attachments']['name'])) {
 	if(!empty($value)){ 	
 		
 		// don't trust these, check after upload $_FILES['bb_attachments']['type']   $_FILES['bb_attachments']['size']			
@@ -455,7 +476,7 @@ while(list($key,$value) = each($_FILES['bb_attachments']['name'])) {
 
 			if (@is_uploaded_file($_FILES['bb_attachments']['tmp_name'][$key]) && @move_uploaded_file($_FILES['bb_attachments']['tmp_name'][$key], $tmp)) {    
 				$size=filesize($tmp);	
-				$mime=bb_attachments_mime_type($tmp); 				
+				$mime = bb_attachments_mime_type($tmp); 		
    				$status=0; $id=0;
    			} else {
    				$status=2;	//   file move to temp name failed for some unknown reason
@@ -610,11 +631,14 @@ function bb_attachments_content_type($file_extension){
       case "exe": $ctype="application/octet-stream"; break;
       case "zip": $ctype="application/zip"; break;
       case "doc": $ctype="application/msword"; break;
+      case "docx" : $ctype = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"; break;
       case "xls": $ctype="application/vnd.ms-excel"; break;
+      case "xlsx": $ctype = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; break;
       case "ppt": $ctype="application/vnd.ms-powerpoint"; break;
+      case "pptx" : $ctype = "application/vnd.openxmlformats-officedocument.presentationml.presentation"; break;
       case "gif": $ctype="image/gif"; break;
       case "png": $ctype="image/png"; break;
-      case "jpeg":
+      case "jpeg": $ctype = "image/jpg"; break;
       case "jpg": $ctype="image/jpg"; break;
       case "mp3": $ctype="audio/mpeg"; break;
       case "wav": $ctype="audio/x-wav"; break;
@@ -792,7 +816,7 @@ global $bb_attachments;
 return true;		
 }
 
-function bb_attachments_delete($filenum=0) {
+function bb_attachments_delete( $url, $filenum=0 ) {
 global $wpdb, $bb_attachments;
 $filenum=intval($filenum);
 if ($filenum==0 && isset($_GET['bbat_delete'])) {$filenum=intval($_GET['bbat_delete']);}
@@ -806,7 +830,19 @@ if ($filenum>0 && bb_current_user_can($bb_attachments['role']['delete'])) {
 			@$wpdb->query("UPDATE ".$bb_attachments['db']." SET status = 1 WHERE id = $file->id LIMIT 1");			
             		}
             		bb_attachments_recount($file->post_id);
-            		if (!isset($_GET['bb_attachments'])) {wp_redirect(get_post_link($file->post_id));}			
+            
+         if ( !isset($_GET['bb_attachments']) ) {
+         	//$post = bp_forums_get_post( $file->post_id );
+         	/*global $wpdb;
+         	print_r($wpdb);
+         	print "<pre>";
+         	print_r($post);die();*/
+         	//{ wp_redirect( get_post_link($file->post_id) ); }		
+         	//$link = $bp->root_domain . '/' . BP_GROUPS_SLUG . '/' . bp_get_group_slug. '/';
+			$link = $url . '#post-' . $file->post_id;
+			wp_redirect( $link );
+			
+		}	
 	}	
 }
 }
@@ -896,17 +932,20 @@ return $ret;
 }
 
 function bb_attachments_mime_type($f) {
-$disabled=strtolower(ini_get('disable_functions')); $mime="";
+	$disabled=strtolower(ini_get('disable_functions')); $mime="";
 
-if (function_exists('mime_content_type') && strpos($disabled,'mime_content_type')===false) {	// many newer PHP doesn't have this
-	$mime=mime_content_type($f);
-}
-elseif (function_exists('finfo_open') && function_exists('finfo_file') && strpos($disabled,'finfo_open')===false) {	// try finfo
-	$finfo=finfo_open(FILEINFO_MIME);  $mime=trim(finfo_file($finfo, $f));
-} 
-elseif (function_exists('exec') && strpos($disabled,'exec')===false) {	//  so try shell  ?  - will fail on windows 100% of the time?
-	$mime=trim(@exec('file -bi '.escapeshellarg($f)));
-}
+	if (function_exists('mime_content_type') && strpos($disabled,'mime_content_type') === false) {	// many newer PHP doesn't have this
+		$mime = mime_content_type($f);
+	} elseif (function_exists('finfo_open') && function_exists('finfo_file') && strpos($disabled,'finfo_open')===false) {	// try finfo
+		$finfo=finfo_open(FILEINFO_MIME);  $mime=trim(finfo_file($finfo, $f));
+	} elseif (function_exists('exec') && strpos($disabled,'exec')===false) {	//  so try shell  ?  - will fail on windows 100% of the time?
+		$mime=trim(@exec('file -bi '.escapeshellarg($f)));
+	}
+	
+	if ( $mime == 'application/msword application/msword' ) {
+		$mime = 'application/msword';
+	}
+		
 if ((!$mime || strpos($mime,'file -bi')!==false) && function_exists('getimagesize') && function_exists('image_type_to_mime_type')  && strpos($disabled,'getimagesize')===false) { 
 	// use image function in worst case senario - won't do text types - must fix !
    	$mime=""; $imgt =@getimagesize($f);  $mime=image_type_to_mime_type($imgt[2]); 	// 0=width  1=height  if ($imgt) {} 
