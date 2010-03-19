@@ -95,8 +95,8 @@ $bb_attachments['aws']['bucket']=strtolower("bb-attachments.".preg_replace("/^(w
 // http://docs.amazonwebservices.com/AmazonS3/2006-03-01/VirtualHosting.html#VirtualHostingCustomURLs
 // cname example: bb-attachments.yoursite.com CNAME bb-attachments.yoursite.com.s3.amazonaws.com
 $bb_attachments['aws']['url']="http://".$bb_attachments['aws']['bucket'].".s3.amazonaws.com/";  
-$bb_attachments['path'] = '/bb-attachments/';
-//$bb_attachments['path']=dirname($_SERVER['DOCUMENT_ROOT'])."/bb-attachments/";  //  make *NOT* WEB ACCESSABLE for security
+//$bb_attachments['path'] = '/bb-attachments/';
+$bb_attachments['path']=dirname($_SERVER['DOCUMENT_ROOT'])."/bb-attachments/";  //  make *NOT* WEB ACCESSABLE for security
 
 $bb_attachments['upload_on_new']=true;	// allow uploads directly on new posts (set FALSE if incompatible for some reason)
 
