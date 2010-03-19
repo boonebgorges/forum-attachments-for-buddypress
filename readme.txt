@@ -20,7 +20,7 @@ Many thanks to slaFFik for his work on localizing this plugin!
 * Upload to plugin directory and activate
 * If you'd like to change the default settings (as described in step 5 here http://bbpress.org/plugins/topic/bb-attachments/installation/), you may do so by editing forum-attachments-for-buddypress-bp-functions.php
 * I use a JavaScript trick to make uploads possible. If you are confident that most of your users will have JS enabled, you do not need to do anything else.
-* If you want to make uploads possible for users with JS turned off, you will need to alter the `<form>` tags on your theme's forum files: groups/single/forum/topic.php and groups/single/forum.php. Change `<form action="" method="post" id="forum-topic-form" class="standard-form">` to `<form action="" method="post" id="forum-topic-form" class="standard-form" enctype="multipart/form-data">
+* If you want to make uploads possible for users with JS turned off, you will need to alter the `<form>` tags on your theme's forum files: groups/single/forum/topic.php and groups/single/forum.php. Change `<form action="" method="post" id="forum-topic-form" class="standard-form">` to `<form action="" method="post" id="forum-topic-form" class="standard-form" enctype="multipart/form-data">`
 
 == Changelog ==
 
