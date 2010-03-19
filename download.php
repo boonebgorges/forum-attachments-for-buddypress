@@ -44,7 +44,7 @@
 			header('Location: '.$aws); 
 		}
 		
-		$headers = apache_request_headers();  
+		//$headers = apache_request_headers();  
 		$ctype = bb_attachments_content_type($file->ext);
 		
 		if (ini_get('zlib.output_compression')) {ini_set('zlib.output_compression', 'Off');}	// fix for IE

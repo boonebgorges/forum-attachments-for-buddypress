@@ -43,13 +43,13 @@
 			header('Location: '.$aws); exit;
 		}
 		
-		$headers = apache_request_headers();  
+		//$headers = apache_request_headers();  
 			 
-		$ifModifiedSince=$headers['If-Modified-Since'];
-		$ifModifiedSince = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) : false;
+		//$ifModifiedSince=$headers['If-Modified-Since'];
+		//$ifModifiedSince = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? stripslashes($_SERVER['HTTP_IF_MODIFIED_SINCE']) : false;
 		$filemtime=filemtime($fullpath);
 		$httpcode="200";
-		if ($ifModifiedSince && (strtotime($ifModifiedSince) >= $filemtime)) {$httpcode="304";}      				
+		//if ($ifModifiedSince && (strtotime($ifModifiedSince) >= $filemtime)) {$httpcode="304";}      				
 		if (ini_get('zlib.output_compression')) {ini_set('zlib.output_compression', 'Off');}	// fix for IE
 			
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', $filemtime).' GMT', true, $httpcode);
