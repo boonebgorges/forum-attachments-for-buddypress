@@ -180,7 +180,7 @@ if ($bb_attachments['style']) {add_action('bb_head', 'bb_attachments_add_css');}
 
 //if ($bb_attachments['title'] && !is_topic() && !is_bb_feed()) {add_filter('topic_title', 'bb_attachments_title',200);} 
 
-if (isset($_GET["new"]) || $bp->current_component == BP_FORUMS_SLUG || $bp->current_action = 'forum' ) {
+if (isset($_GET["new"]) || $bp->current_component == BP_FORUMS_SLUG || $bp->current_action == 'forum' ) {
 	add_action( 'bp_after_group_header', 'bb_attachments_cache' );	
 	add_filter('bp_after_post_content', 'bb_attachments_post_footer',4);
 	add_filter('post_edit_uri', 'bb_attachments_link');

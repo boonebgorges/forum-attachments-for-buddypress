@@ -38,3 +38,6 @@ Many thanks to slaFFik for his work on localizing this plugin!
 = 0.2.1 =
 * Corrected redirect after deleting attachments
 * Removed header requirements causing errors on some Apache setups
+
+= 0.2.2 =
+* Corrected typo that was causing redirect conflicts with certain forum-related plugins

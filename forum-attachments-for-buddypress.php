@@ -5,7 +5,7 @@ Plugin URI: http://teleogistic.net/2009/10/help-me-alpha-test-buddypress-forum-a
 Description: Gives members the ability to upload attachments on their posts. Ported to BP by Boone Gorges
 Author: boonebgorges
 Author URI: http://teleogistic.net
-Version: 0.2.1
+Version: 0.2.2
 
 License: CC-GNU-GPL http://creativecommons.org/licenses/GPL/2.0/
 
