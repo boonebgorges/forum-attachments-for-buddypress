@@ -458,6 +458,10 @@ function bb_attachments_process_post($group_id, $post, $display=0) {
 	reset($_FILES);
 
 	$output="<h3>".__("Uploads","fa-4-buddypress")."</h3><ol>";	// start output
+	
+	if ( !is_array( $_FILES['bb_attachments']['name'] ) )
+		$_FILES['bb_attachments']['name'] = array();
+	
 	while(list($key,$value) = each($_FILES['bb_attachments']['name'])) {
 	if(!empty($value)){ 	
 		
