@@ -3,7 +3,7 @@ Contributors: _ck_, boonebgorges, cuny-academic-commons
 Tags: buddypress, bbpress, forums, attachments
 Requires at least: WPMU 2.9, BP 1.2
 Tested up to: WPMU 2.9.2, BP 1.2.2.1
-Stable tag: trunk
+Stable tag: 0.2.4
 
 Gives members the ability to upload attachments on their forum posts in BuddyPress.
 
@@ -44,3 +44,6 @@ Many thanks to slaFFik for his work on localizing this plugin!
 
 = 0.2.3 =
 * Added enctype fix (and additional readme instructions) for forum index page
+
+= 0.2.4 =
+* Eliminated bbPress permissions checks on some add_actions to account for changes in recent versions of BuddyPress

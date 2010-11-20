@@ -180,6 +180,12 @@ if ($bb_attachments['style']) {add_action('bb_head', 'bb_attachments_add_css');}
 
 //if ($bb_attachments['title'] && !is_topic() && !is_bb_feed()) {add_filter('topic_title', 'bb_attachments_title',200);} 
 
+add_action('groups_forum_new_topic_after','bb_attachments_upload_form');
+add_action('groups_forum_new_reply_after', 'bb_attachments_upload_form');
+add_action('groups_forum_edit_post_after', 'bb_attachments_upload_form');
+add_action('bp_after_group_forum_post_new', 'bb_attachments_upload_form');
+add_action('bp_group_after_edit_forum_post', 'bb_attachments_upload_form');
+
 if (isset($_GET["new"]) || $bp->current_component == BP_FORUMS_SLUG || $bp->current_action == 'forum' ) {
 	add_action( 'bp_after_group_header', 'bb_attachments_cache' );	
 	add_filter('bp_after_post_content', 'bb_attachments_post_footer',4);
@@ -189,11 +195,7 @@ if (isset($_GET["new"]) || $bp->current_component == BP_FORUMS_SLUG || $bp->curr
 		add_action('post_edit_form','bb_attachments');		// auto-insert on post edit form
 
 		if ($bb_attachments['upload_on_new']) {
-			add_action('groups_forum_new_topic_after','bb_attachments_upload_form');
-			add_action('groups_forum_new_reply_after', 'bb_attachments_upload_form');
-			add_action('groups_forum_edit_post_after', 'bb_attachments_upload_form');
-			add_action('bp_after_group_forum_post_new', 'bb_attachments_upload_form');
-			add_action('bp_group_after_edit_forum_post', 'bb_attachments_upload_form');
+			
 			add_action('pre_post_form','bb_attachments_enctype');	 // multipart workaround on new post form
 
 
