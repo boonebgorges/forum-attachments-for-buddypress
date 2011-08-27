@@ -16,7 +16,7 @@ function bb_attachments_localize () {
 	$plugin_dir = basename(dirname(__FILE__));
 	$locale = get_locale();
 	$mofile = WP_PLUGIN_DIR . "/forum-attachments-for-buddypress/languages/fa-4-buddypress-$locale.mo";
-      
+
       if ( file_exists( $mofile ) )
       		load_textdomain( 'fa-4-buddypress', $mofile );
 }
@@ -28,7 +28,7 @@ add_action ('plugins_loaded', 'bb_attachments_localize');
 function bp_forum_attachments_init() {
 	require( dirname( __FILE__ ) . '/forum-attachments-for-buddypress-bp-functions.php' );
 }
-add_action( 'bp_init', 'bp_forum_attachments_init' );
+add_action( 'bp_include', 'bp_forum_attachments_init' );
 
 
 
